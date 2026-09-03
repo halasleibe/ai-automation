@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIT BY BIT — AI Automation</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --navy: #102a43;
+  --blue: #1976d2;
+  --cyan: #20c4d9;
+  --light: #eef8fc;
+  --pale: #f7fbfd;
+  --text: #243b53;
+  --muted: #627d98;
+  --green: #159957;
+  --orange: #f2994a;
+  --red: #d64545;
+  --border: #d9e7ef;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  color: var(--text);
+  background: #eaf2f6;
+  font-family: "Cairo", Arial, sans-serif;
+  line-height: 1.8;
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 12mm auto;
+  padding: 18mm 17mm 20mm;
+  background: white;
+  position: relative;
+  page-break-after: always;
+  box-shadow: 0 3px 14px #78909c33;
+}
+
+@media print {
+  body { background: white; }
+  .page {
+    margin: 0;
+    box-shadow: none;
+    width: 210mm;
+    min-height: 297mm;
+  }
+}
+
+h1, h2, h3, h4 {
+  color: var(--navy);
+  line-height: 1.35;
+  margin-top: 0;
+}
+
+h1 { font-size: 38px; }
+h2 {
+  font-size: 26px;
+  border-right: 6px solid var(--cyan);
+  padding-right: 12px;
+  margin-bottom: 18px;
+}
+h3 { font-size: 19px; color: var(--blue); margin-bottom: 8px; }
+h4 { font-size: 16px; color: var(--navy); margin-bottom: 4px; }
+
+p { margin: 7px 0 12px; }
+
+.cover {
+  background: linear-gradient(145deg, #102a43, #1769aa 60%, #20c4d9);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.cover h1, .cover h2, .cover p { color: white; }
+.cover h1 { font-size: 47px; letter-spacing: 1px; }
+.cover h2 {
+  border: 0;
+  padding: 0;
+  font-size: 27px;
+  margin-top: 10px;
+}
+.cover .brand {
+  font-size: 18px;
+  letter-spacing: 4px;
+  font-weight: 800;
+}
+.cover .tag {
+  margin-top: 38px;
+  padding: 15px 20px;
+  border: 1px solid #ffffff66;
+  border-radius: 14px;
+  background: #ffffff1c;
+  width: fit-content;
+}
+.cover .circle {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  position: absolute;
+  left: -70px;
+  bottom: -60px;
+  background: #ffffff18;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.card {
+  background: var(--pale);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 13px 16px;
+  margin: 12px 0;
+}
+
+.callout {
+  border-right: 5px solid var(--cyan);
+  background: var(--light);
+  padding: 12px 15px;
+  border-radius: 9px;
+  margin: 14px 0;
+}
+
+.warning {
+  border-right-color: var(--orange);
+  background: #fff7ed;
+}
+
+.success {
+  border-right-color: var(--green);
+  background: #effaf4;
+}
+
+.workflow {
+  direction: ltr;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.node {
+  background: var(--navy);
+  color: white;
+  padding: 9px 13px;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: 13px;
+  text-align: center;
+}
+
+.arrow {
+  color: var(--cyan);
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.step {
+  display: flex;
+  gap: 10px;
+  margin: 8px 0;
+  align-items: flex-start;
+}
+
+.step-number {
+  background: var(--blue);
+  color: white;
+  border-radius: 50%;
+  min-width: 27px;
+  height: 27px;
+  text-align: center;
+  line-height: 27px;
+  font-weight: 700;
+}
+
+ul, ol { padding-right: 24px; }
+li { margin: 4px 0; }
+
+.checklist {
+  list-style: none;
+  padding: 0;
+  columns: 2;
+}
+
+.checklist li::before {
+  content: "☐";
+  color: var(--blue);
+  font-size: 18px;
+  margin-left: 7px;
+}
+
+.prompt {
+  direction: ltr;
+  text-align: left;
+  white-space: pre-wrap;
+  background: #102a43;
+  color: #e8f7fb;
+  border-radius: 10px;
+  padding: 15px;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin: 12px 0;
+}
+
+th {
+  background: var(--navy);
+  color: white;
+  padding: 8px;
+}
+
+td {
+  border: 1px solid var(--border);
+  padding: 7px;
+  vertical-align: top;
+}
+
+tr:nth-child(even) { background: #f7fbfd; }
+
+.footer {
+  position: absolute;
+  bottom: 8mm;
+  left: 17mm;
+  right: 17mm;
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 10px;
+  border-top: 1px solid var(--border);
+  padding-top: 5px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 9px;
+  background: #dff7fa;
+  color: #087f8c;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.small { font-size: 12px; }
+.center { text-align: center; }
+.ltr { direction: ltr; text-align: left; }
+
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html,
+  body {
+    width: 210mm;
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    min-height: 297mm;
+    margin: 0;
+    padding: 18mm 17mm 20mm;
+    page-break-after: always;
+    break-after: page;
+    box-shadow: none;
+    overflow: hidden;
+  }
+
+  .page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  h1, h2, h3, h4 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .card,
+  .callout,
+  .prompt,
+  table,
+  .workflow {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .footer {
+    position: absolute;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- COVER -->
+<section class="page cover">
+  <div class="circle"></div>
+  <div class="brand">circods presents</div>
+  <h1>BIT BY BIT</h1>
+  <h2>AI AUTOMATION<br>10 DAY ZERO-TO-FIRST-WORKFLOW GUIDE</h2>
+  <p style="font-size:18px; margin-top:25px;">
+    تعلّم Automation من الصفر، خطوة صغيرة كل يوم،
+    وابنِ أول Workflow حقيقي يعمل.
+  </p>
+  <div class="tag">🤖 Beginner-friendly · Make-based · No coding required</div>
+  <p style="margin-top:70px; font-size:13px;">MASTER REFERENCE</p>
+</section>
+
+<!-- CONTENTS -->
+<section class="page">
+  <h2>Contents</h2>
+  <div class="card">
+    <ol>
+      <li>Vision & Final Outcome</li>
+      <li>Tools, Accounts & Setup</li>
+      <li>Security Rules</li>
+      <li>Basic Glossary</li>
+      <li>The 10-Day Plan</li>
+      <li>Organizer Guide</li>
+      <li>Daily Story Format</li>
+      <li>Community & Progress</li>
+      <li>Prompt Bank</li>
+      <li>Mini Project Bank</li>
+      <li>Troubleshooting Cheat Sheet</li>
+      <li>What We Do Not Learn Yet</li>
+      <li>Final Roadmap</li>
+      <li>References</li>
+      <li>Am I Ready?</li>
+      <li>What’s Next?</li>
+    </ol>
+  </div>
+
+  <div class="callout success">
+    <strong>طريقة استخدام هذا الدليل:</strong>
+    اقرأ شرح اليوم، نفّذ الـartifact الصغير، ثم أكمل الـMini Challenge.
+    لا تنتقل إلى التعقيد قبل أن تفهم الفكرة الأساسية.
+  </div>
+
+  <h3>قاعدة السلسلة</h3>
+  <p>
+    التقدم أهم من الكمال. لا نحتاج إلى بناء نظام ضخم خلال عشرة أيام.
+    نحتاج فقط إلى فهم طريقة التفكير، تجربة الأدوات، وبناء Automation صغيرة
+    يمكن شرحها واختبارها وتحسينها.
+  </p>
+</section>
+
+<!-- VISION -->
+<section class="page">
+  <h2>1. Vision & Final Outcome</h2>
+
+  <h3>ما معنى BIT BY BIT؟</h3>
+  <p>
+    تعني <strong>خطوة صغيرة بعد خطوة صغيرة</strong>. نتعلم مفهومًا واحدًا،
+    نطبقه، نلاحظ النتيجة، ثم نضيف عليه في اليوم التالي.
+  </p>
+
+  <h3>لماذا 1% كل يوم؟</h3>
+  <p>
+    لأن Automation ليست زرًا سحريًا. هي طريقة تفكير تتكون تدريجيًا:
+    تحديد المشكلة، معرفة البيانات، اختيار نقطة البداية، ثم ربط الخطوات.
+    خلال عشرة أيام لن نصبح خبراء، لكن سننتقل من عدم معرفة المفاهيم
+    إلى بناء Workflow صغير يعمل.
+  </p>
+
+  <h3>النتيجة في Day 10</h3>
+  <p>يستطيع المشارك أن:</p>
+  <ul>
+    <li>يحدد مشكلة يدوية متكررة.</li>
+    <li>يرسم Workflow واضحًا.</li>
+    <li>يحدد Trigger وInput وAction.</li>
+    <li>يستخدم Make لبناء Scenario بسيط.</li>
+    <li>يضيف AI لمهمة مثل التصنيف أو التلخيص.</li>
+    <li>يربط Google Forms وGoogle Sheets.</li>
+    <li>يختبر النتيجة ويقرأ الأخطاء الأساسية.</li>
+  </ul>
+
+  <h3>Final Workflow</h3>
+  <div class="workflow">
+    <div class="node">Problem</div><div class="arrow">→</div>
+    <div class="node">Workflow</div><div class="arrow">→</div>
+    <div class="node">Trigger</div><div class="arrow">→</div>
+    <div class="node">Input / Data</div><div class="arrow">→</div>
+    <div class="node">AI</div><div class="arrow">→</div>
+    <div class="node">Decision</div><div class="arrow">→</div>
+    <div class="node">Action</div><div class="arrow">→</div>
+    <div class="node">Test</div><div class="arrow">→</div>
+    <div class="node">Improve</div>
+  </div>
+
+  <div class="callout">
+    <strong>المثال الرئيسي:</strong><br>
+    Google Form → Make → AI → Google Sheets
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section class="page">
+  <h2>2. Tools We Need</h2>
+
+  <table>
+    <tr><th>Tool</th><th>الاستخدام</th></tr>
+    <tr>
+      <td><strong>ChatGPT</strong></td>
+      <td>التعلم، التجارب، كتابة Prompts، تحليل النصوص، توليد الأفكار، والمساعدة في Debugging.</td>
+    </tr>
+    <tr>
+      <td><strong>Google Forms</strong></td>
+      <td>مصدر Input/Data؛ يستقبل إجابات المشاركين أو المستخدمين.</td>
+    </tr>
+    <tr>
+      <td><strong>Google Sheets</strong></td>
+      <td>تخزين النتائج بطريقة منظمة يمكن قراءتها ومراجعتها.</td>
+    </tr>
+    <tr>
+      <td><strong>Make</strong></td>
+      <td>بناء وربط الـWorkflow عبر Scenario وModules دون كتابة كود.</td>
+    </tr>
+    <tr>
+      <td><strong>Make Academy</strong></td>
+      <td>مصدر رسمي لتعلم Make ومفاهيم Automation تدريجيًا.</td>
+    </tr>
+  </table>
+
+  <h3>لا نحتاج خلال الأيام العشرة</h3>
+  <p>
+    Python، Machine Learning، Database، API development، أو AI Agents.
+    يمكن فهم أسماء هذه الموضوعات لاحقًا، لكنها ليست شرطًا لإكمال المسار.
+  </p>
+
+  <h3>Accounts Checklist</h3>
+  <ul class="checklist">
+    <li>Google Account</li>
+    <li>ChatGPT Account</li>
+    <li>Make Account</li>
+    <li>Make Academy Account</li>
+  </ul>
+
+  <h3>Setup</h3>
+  <ol>
+    <li>أنشئ Google Sheet باسم <strong>BIT BY BIT — AI Automation Lab</strong>.</li>
+    <li>أنشئ Google Form باسم <strong>BIT BY BIT — Test Form</strong>.</li>
+    <li>أنشئ مجلد Google Drive باسم <strong>BIT BY BIT / AI Automation</strong>.</li>
+    <li>أنشئ حسابًا في Make.</li>
+    <li>افتح Make Academy.</li>
+    <li>أنشئ ChatGPT Project اختياريًا باسم <strong>BIT BY BIT — AI Automation Lab</strong>.</li>
+  </ol>
+</section>
+
+<!-- SECURITY AND GLOSSARY -->
+<section class="page">
+  <h2>3. Security Rules</h2>
+  <ul>
+    <li>لا تستخدم كلمات مرور حقيقية في أي تمرين.</li>
+    <li>لا تضع API keys داخل Screenshots أو Prompts.</li>
+    <li>استخدم بيانات وهمية بدل الأسماء والأرقام الحقيقية.</li>
+    <li>لا تدخل معلومات صحية أو مالية أو شخصية حساسة.</li>
+    <li>تذكّر أن AI قد يخطئ.</li>
+    <li>لا تستخدم Automation لاتخاذ قرارات عالية الخطورة دون مراجعة بشرية.</li>
+  </ul>
+
+  <h2>4. Basic Glossary</h2>
+  <table>
+    <tr><th>المصطلح</th><th>المعنى</th><th>مثال</th></tr>
+    <tr><td>Automation</td><td>تنفيذ مهمة تلقائيًا بدل تكرارها يدويًا.</td><td>حفظ إجابة Form في Sheet.</td></tr>
+    <tr><td>Workflow</td><td>تسلسل الخطوات من البداية إلى النتيجة.</td><td>Form → AI → Sheet.</td></tr>
+    <tr><td>Trigger</td><td>الحدث الذي يبدأ العملية.</td><td>إرسال إجابة جديدة.</td></tr>
+    <tr><td>Action</td><td>الشيء الذي يحدث بعد البداية.</td><td>إضافة صف جديد.</td></tr>
+    <tr><td>Input</td><td>البيانات الداخلة.</td><td>نص المستخدم.</td></tr>
+    <tr><td>Output</td><td>النتيجة الخارجة.</td><td>Category وSummary.</td></tr>
+    <tr><td>Process</td><td>المعالجة التي تحدث بينهما.</td><td>تحليل النص.</td></tr>
+    <tr><td>Scenario</td><td>Workflow داخل Make.</td><td>Scenario يصنف الطلبات.</td></tr>
+    <tr><td>Module</td><td>خطوة أو تطبيق داخل Scenario.</td><td>Google Sheets module.</td></tr>
+    <tr><td>Connection</td><td>إذن الربط بين Make وحساب آخر.</td><td>ربط Google account.</td></tr>
+    <tr><td>Mapping</td><td>تمرير قيمة من Module إلى آخر.</td><td>تمرير إجابة Form إلى AI.</td></tr>
+    <tr><td>Filter</td><td>شرط يسمح بمرور بيانات معينة.</td><td>مرر Hardware فقط.</td></tr>
+    <tr><td>Router</td><td>تقسيم Workflow إلى مسارات.</td><td>Hardware / Software.</td></tr>
+    <tr><td>Prompt</td><td>التعليمات التي نعطيها للـAI.</td><td>لخص النص في 3 نقاط.</td></tr>
+    <tr><td>LLM</td><td>نموذج لغوي كبير يتعامل مع النصوص.</td><td>تحليل إجابة مكتوبة.</td></tr>
+    <tr><td>Structured Output</td><td>نتيجة مرتبة في حقول محددة.</td><td>Category: Hardware.</td></tr>
+    <tr><td>API</td><td>طريقة منظمة لتواصل البرامج.</td><td>برنامج يطلب نتيجة من خدمة.</td></tr>
+    <tr><td>Webhook</td><td>رسالة تصل إلى Workflow عند حدوث حدث.</td><td>إرسال بيانات فورًا.</td></tr>
+    <tr><td>AI Agent</td><td>نظام يستخدم AI للتخطيط وتنفيذ عدة خطوات.</td><td>موضوع لاحق، وليس مطلوبًا هنا.</td></tr>
+  </table>
+</section>
+
+<!-- DAY 1 -->
+<section class="page">
+  <h2>DAY 1 — WHAT IS AUTOMATION?</h2>
+  <span class="badge">Theory first · No Make</span>
+
+  <h3>الهدف</h3>
+  <p>فهم Automation دون استخدام أدوات تقنية.</p>
+
+  <h3>المفاهيم</h3>
+  <ul>
+    <li><strong>Manual task:</strong> مهمة تنفذها بنفسك كل مرة.</li>
+    <li><strong>Automated task:</strong> مهمة تنفذها الأداة بعد حدوث Trigger.</li>
+    <li><strong>Trigger:</strong> بداية العملية.</li>
+    <li><strong>Action:</strong> النتيجة أو الخطوة التالية.</li>
+  </ul>
+
+  <div class="workflow">
+    <div class="node">New email</div><div class="arrow">→</div>
+    <div class="node">Check sender</div><div class="arrow">→</div>
+    <div class="node">Send notification</div>
+  </div>
+
+  <h3>التطبيق العملي</h3>
+  <ol>
+    <li>اكتب 3 مهام متكررة تقوم بها أسبوعيًا.</li>
+    <li>اختر مهمة فيها بداية واضحة ونتيجة واضحة.</li>
+    <li>اكتبها بصيغة: Trigger → Process → Action.</li>
+  </ol>
+
+  <h3>Mini Challenge</h3>
+  <p>حوّل مهمة مثل “تنظيم طلبات التعلم” إلى Workflow من ثلاث خطوات.</p>
+
+  <div class="callout success">
+    <strong>Artifact اليوم:</strong> ثلاث مهام متكررة + Workflow واحد مكتوب.
+  </div>
+
+  <h3>Checklist</h3>
+  <ul class="checklist">
+    <li>أستطيع شرح Automation.</li>
+    <li>حددت Trigger.</li>
+    <li>حددت Action.</li>
+    <li>كتبت Workflow واحدًا.</li>
+    <li>لم أستخدم Make بعد.</li>
+  </ul>
+
+  <h3>Organizer Pre-learning</h3>
+  <p>20–40 دقيقة: افهمي الفرق بين Manual وAutomated، وجهزي مثالين من الحياة اليومية.</p>
+</section>
+
+<!-- DAY 2 -->
+<section class="page">
+  <h2>DAY 2 — THINK IN WORKFLOWS</h2>
+
+  <h3>الهدف</h3>
+  <p>تعلم تفكيك أي مهمة إلى Input → Process → Output.</p>
+
+  <div class="workflow">
+    <div class="node">Notes</div><div class="arrow">→</div>
+    <div class="node">AI summarizes</div><div class="arrow">→</div>
+    <div class="node">Summary</div>
+  </div>
+
+  <h3>الشرح</h3>
+  <p>
+    كل Workflow يجيب عن ثلاثة أسئلة:
+    ما البيانات التي تدخل؟ ماذا يحدث لها؟ وما النتيجة المطلوبة؟
+  </p>
+
+  <h3>التطبيق</h3>
+  <ol>
+    <li>اختر ثلاث مهام بسيطة.</li>
+    <li>ارسم لكل مهمة Input وProcess وOutput.</li>
+    <li>أعد رسمها بصيغة Trigger → Process → Action.</li>
+    <li>استخدم الورق أو Canva أو Excalidraw.</li>
+  </ol>
+
+  <h3>Mini Challenge</h3>
+  <p>احذف خطوة غير ضرورية من أحد Workflows، ثم اشرح لماذا لم تعد مطلوبة.</p>
+
+  <div class="callout success"><strong>Artifact اليوم:</strong> ثلاثة Workflows مرسومة.</div>
+
+  <h3>Checklist</h3>
+  <ul class="checklist">
+    <li>حددت Input.</li>
+    <li>حددت Process.</li>
+    <li>حددت Output.</li>
+    <li>رسمت 3 Workflows.</li>
+    <li>حذفت خطوة زائدة.</li>
+  </ul>
+
+  <h3>Organizer Pre-learning</h3>
+  <p>حضّري Workflow واحدًا مرسومًا وآخر فيه خطوة زائدة لعرض فكرة التحسين.</p>
+</section>
+
+<!-- DAY 3 -->
+<section class="page">
+  <h2>DAY 3 — AI FROM ZERO</h2>
+
+  <h3>الهدف</h3>
+  <p>فهم دور AI داخل Automation دون رياضيات أو Training.</p>
+
+  <h3>مفاهيم أساسية</h3>
+  <ul>
+    <li><strong>AI:</strong> أنظمة تنفذ مهام تتطلب عادةً قدرًا من الفهم أو التحليل.</li>
+    <li><strong>Generative AI:</strong> AI ينشئ نصًا أو أفكارًا أو مخرجات جديدة.</li>
+    <li><strong>LLM:</strong> نموذج يتعامل مع اللغة ويتوقع مخرجات مناسبة للسياق.</li>
+    <li><strong>ChatGPT:</strong> واجهة للمحادثة والتجربة والتعلم.</li>
+  </ul>
+
+  <h3>متى نستخدم Automation تقليدية؟</h3>
+  <p>عندما تكون القاعدة واضحة، مثل: إذا وصل Form فأضف صفًا.</p>
+
+  <h3>متى يكون AI مفيدًا؟</h3>
+  <p>عندما تحتاج إلى فهم نص غير منظم، مثل التلخيص أو التصنيف أو استخراج المهام.</p>
+
+  <table>
+    <tr><th>AI Task</th><th>مثال</th></tr>
+    <tr><td>Summarization</td><td>تحويل فقرة طويلة إلى نقاط.</td></tr>
+    <tr><td>Classification</td><td>تصنيف رسالة إلى Hardware أو Software.</td></tr>
+    <tr><td>Extraction</td><td>استخراج Task وDeadline.</td></tr>
+    <tr><td>Rewriting</td><td>إعادة صياغة رسالة بلغة ألطف.</td></tr>
+    <tr><td>Generation</td><td>اقتراح أفكار لمشروع.</td></tr>
+  </table>
+
+  <h3>التطبيق</h3>
+  <p>أعطِ ChatGPT النص التالي:</p>
+  <div class="card">“لدينا اجتماع لمراجعة فكرة المشروع يوم الخميس. يجب إرسال الملاحظات قبل الجمعة.”</div>
+  <p>اطلب منه استخراج:</p>
+  <ul><li>Summary</li><li>Tasks</li><li>Deadlines</li></ul>
+
+  <h3>Mini Challenge</h3>
+  <p>قارن بين تصنيف النص يدويًا وتصنيفه بالـAI. ما الذي أصبح أسرع؟ وما الذي يحتاج مراجعة؟</p>
+
+  <div class="callout warning">AI احتمالي وقد يخطئ؛ لا تتعامل مع مخرجاته كحقيقة مضمونة.</div>
+
+  <h3>Organizer Pre-learning</h3>
+  <p>حضّري نصًا قصيرًا وجرّبي عليه التلخيص والاستخراج والتصنيف.</p>
+</section>
+
+<!-- DAY 4 -->
+<section class="page">
+  <h2>DAY 4 — PROMPTING</h2>
+
+  <h3>الهدف</h3>
+  <p>كتابة تعليمات واضحة يستطيع AI اتباعها داخل Workflow.</p>
+
+  <h3>ما هو Prompt؟</h3>
+  <p>
+    هو التعليمات والسياق والمدخلات التي نرسلها إلى AI. كلما كانت المهمة
+    محددة، زادت فرصة الحصول على نتيجة مناسبة.
+  </p>
+
+  <h3>Prompt Formula</h3>
+  <div class="workflow">
+    <div class="node">Context</div><div class="arrow">→</div>
+    <div class="node">Task</div><div class="arrow">→</div>
+    <div class="node">Input</div><div class="arrow">→</div>
+    <div class="node">Rules</div><div class="arrow">→</div>
+    <div class="node">Output Format</div>
+  </div>
+
+  <h3>مثال سيئ</h3>
+  <div class="prompt">Summarize this.</div>
+
+  <h3>مثال أفضل</h3>
+  <div class="prompt">You are a clear and concise summarization assistant.
+
+Task:
+Summarize the input in 3 short bullet points.
+
+Rules:
+- Keep the meaning.
+- Do not invent information.
+- Use simple language.
+
+Input:
+[PASTE TEXT HERE]
+
+Output:
+- Point 1
+- Point 2
+- Point 3</div>
+
+  <h3>Structured Output</h3>
+  <p>
+    نحتاج أحيانًا إلى نتيجة منظمة لأن Module لاحقًا يحتاج كل قيمة في حقل مستقل:
+    Category، Topic، Level، Summary.
+  </p>
+
+  <h3>Mini Challenge</h3>
+  <p>حسّن Prompt سيئًا، وأضف إليه Context وRules وOutput Format.</p>
+
+  <h3>قالب جاهز</h3>
+  <div class="prompt">You are a helpful automation assistant.
+
+Context:
+[Explain the situation]
+
+Task:
+[Describe exactly what the AI should do]
+
+Input:
+[Insert the user data]
+
+Rules:
+- Do not invent information.
+- If the input is unclear, say "Unclear".
+- Keep the answer concise.
+
+Output format:
+Field 1: ...
+Field 2: ...
+Field 3: ...</div>
+
+  <h3>Organizer Pre-learning</h3>
+  <p>جرّبي Prompt غير واضح ثم حسّنيه ثلاث مرات، واحتفظي بالنتائج للمقارنة.</p>
+</section>
+
+<!-- DAY 5 -->
+<section class="page">
+  <h2>DAY 5 — FIRST STEPS IN MAKE</h2>
+  <span class="badge">First Make day · No AI</span>
+
+  <h3>الهدف</h3>
+  <p>بناء أول Scenario يمرر إجابة Google Form إلى Google Sheets.</p>
+
+  <h3>مصطلحات اليوم</h3>
+  <p>
+    <strong>Dashboard:</strong> الصفحة الرئيسية.
+    <strong>Scenario:</strong> الـWorkflow.
+    <strong>Module:</strong> خطوة داخل Workflow.
+    <strong>Connection:</strong> ربط الحساب.
+    <strong>Run once:</strong> تشغيل تجريبي.
+    <strong>Execution:</strong> تفاصيل التشغيل.
+    <strong>Mapping:</strong> تمرير قيمة إلى خطوة أخرى.
+  </p>
+
+  <h3>خطوات التنفيذ</h3>
+  <div class="step"><span class="step-number">1</span><span>افتح Make وسجّل الدخول.</span></div>
+  <div class="step"><span class="step-number">2</span><span>اختر Create new Scenario.</span></div>
+  <div class="step"><span class="step-number">3</span><span>أضف مصدر Google Forms أو مصدر Responses المتاح في واجهتك الحالية.</span></div>
+  <div class="step"><span class="step-number">4</span><span>اربط Google Account.</span></div>
+  <div class="step"><span class="step-number">5</span><span>اختر Trigger المناسب لاستقبال Response جديد.</span></div>
+  <div class="step"><span class="step-number">6</span><span>أضف Google Sheets واختر Add a Row أو الاسم القريب منه.</span></div>
+  <div class="step"><span class="step-number">7</span><span>اختر ملف BIT BY BIT — AI Automation Lab والورقة المطلوبة.</span></div>
+  <div class="step"><span class="step-number">8</span><span>استخدم Mapping لتمرير إجابة Form إلى العمود المناسب.</span></div>
+  <div class="step"><span class="step-number">9</span><span>اضغط Run once.</span></div>
+  <div class="step"><span class="step-number">10</span><span>أرسل إجابة تجريبية من Form.</span></div>
+  <div class="step"><span class="step-number">11</span><span>افحص Execution details.</span></div>
+  <div class="step"><span class="step-number">12</span><span>تأكد من إضافة Row جديد في Sheet.</span></div>
+
+  <div class="callout">
+    قد تختلف أسماء Modules أو أماكنها حسب واجهة Make أو الخطة الحالية.
+    الفكرة الثابتة هي: استقبال البيانات ثم إضافة صف.
+  </div>
+
+  <h3>Mini Challenge</h3>
+  <p>أضف حقلًا جديدًا إلى Form، ثم راقب كيف يظهر في Mapping وأرسله إلى عمود جديد.</p>
+
+  <h3>Checklist</h3>
+  <ul class="checklist">
+    <li>أنشأت Scenario.</li>
+    <li>ربطت Google.</li>
+    <li>شغلت Run once.</li>
+    <li>أرسلت Test response.</li>
+    <li>ظهر Row في Sheet.</li>
+    <li>فهمت Mapping.</li>
+  </ul>
+
+  <h3>Organizer Pre-learning</h3>
+  <p>نفّذي السيناريو مرة ببيانات وهمية، وصوّري Dashboard وMapping وExecution.</p>
+</section>
+
+<!-- DAY 6 -->
+<section class="page">
+  <h2>DAY 6 — FIRST AI AUTOMATION</h2>
+  <span class="badge">Main workflow</span>
+
+  <h3>الهدف</h3>
+  <p>إضافة AI إلى Workflow حقيقي: Form → Make → AI → Sheet.</p>
+
+  <h3>Form Question</h3>
+  <div class="card">What do you want to learn?</div>
+
+  <h3>Example Input</h3>
+  <div class="card">I want to learn Arduino and simple circuits.</div>
+
+  <h3>Expected Output</h3>
+  <table>
+    <tr><th>Field</th><th>Example</th></tr>
+    <tr><td>Category</td><td>Hardware</td></tr>
+    <tr><td>Topic</td><td>Arduino and simple circuits</td></tr>
+    <tr><td>Level</td><td>Beginner</td></tr>
+    <tr><td>Summary</td><td>Beginner interest in Arduino and basic circuits.</td></tr>
+  </table>
+
+  <p><strong>Categories:</strong> Hardware · Software · Other</p>
+  <p><strong>Levels:</strong> Beginner · Intermediate · Advanced</p>
+
+  <h3>الخطوات</h3>
+  <ol>
+    <li>استقبل Form response عبر Trigger.</li>
+    <li>مرّر النص إلى AI module المتاح في Make.</li>
+    <li>اكتب Prompt واضحًا.</li>
+    <li>استلم Category وTopic وLevel وSummary.</li>
+    <li>أضف Google Sheets Action.</li>
+    <li>استخدم Mapping لكل نتيجة في عمودها.</li>
+    <li>اضغط Run once.</li>
+    <li>أرسل خمسة Inputs مختلفة.</li>
+    <li>افحص النتائج والحقول الفارغة.</li>
+  </ol>
+
+  <h3>Prompt جاهز لـMake AI Module</h3>
+  <div class="prompt">You are a classification assistant inside an automation workflow.
+
+Task:
+Classify the user's learning request.
+
+Allowed categories:
+- Hardware
+- Software
+- Other
+
+Allowed levels:
+- Beginner
+- Intermediate
+- Advanced
+
+Return these fields:
+Category:
+Topic:
+Level:
+Summary:
+
+Rules:
+- Use only the allowed category and level values.
+- Do not invent information.
+- Keep the summary short.
+- If the level is not clear, use Beginner.
+- If the topic does not fit Hardware or Software, use Other.
+
+User learning request:
+[Map the Google Form answer here]</div>
+
+  <div class="callout success">
+    <strong>Artifact اليوم:</strong> خمسة صفوف في Google Sheets تحتوي على نتائج AI.
+  </div>
+
+  <h3>Organizer Pre-learning</h3>
+  <p>
+    اختبري خمس إجابات: Hardware، Software، Other، إجابة فارغة،
+    وإجابة غامضة. جهزي Screenshot للـPrompt والـMapping.
+  </p>
+</section>
+
+<!-- DAY 7 -->
+<section class="page">
+  <h2>DAY 7 — MAPPING, FILTERS & ROUTERS</h2>
+
+  <h3>Mapping</h3>
+  <p>
+    Mapping يعني أن تأخذ قيمة من Module سابق وتضعها في خانة Module لاحق.
+    مثال: إجابة Form تذهب إلى User Request، وCategory الناتجة تذهب إلى عمود Category.
+  </p>
+
+  <h3>Filter</h3>
+  <p>
+    Filter يمنع أو يسمح بمرور البيانات بناءً على شرط.
+    مثال: اسمح بالمرور إذا كانت Category تساوي Hardware.
+  </p>
+
+  <h3>Router</h3>
+  <p>
+    Router يقسم Workflow إلى أكثر من مسار.
+  </p>
+
+  <div class="workflow">
+    <div class="node">AI Classification</div><div class="arrow">→</div>
+    <div class="node">Router</div><div class="arrow">→</div>
+    <div class="node">Hardware path</div>
+    <div class="node">Software path</div>
+    <div class="node">Other path</div>
+  </div>
+
+  <table>
+    <tr><th>الحالة</th><th>ما نستخدمه</th></tr>
+    <tr><td>مرّر Hardware فقط</td><td>Filter</td></tr>
+    <tr><td>قسّم Hardware وSoftware وOther</td><td>Router</td></tr>
+  </table>
+
+  <h3>Test Cases</h3>
+  <ul>
+    <li>Hardware input</li>
+    <li>Software input</li>
+    <li>Other input</li>
+    <li>Empty input</li>
+    <li>Ambiguous input</li>
+  </ul>
+
+  <h3>Mini Challenge</h3>
+  <p>أضف شرطًا يمنع تمرير أي نتيجة لا تحتوي على Topic.</p>
+
+  <h3>Checklist</h3>
+  <ul class="checklist">
+    <li>استخدمت Mapping.</li>
+    <li>أنشأت Filter.</li>
+    <li>فهمت شرط المرور.</li>
+    <li>أنشأت Router أو رسمته.</li>
+    <li>اختبرت الحالات الخمس.</li>
+  </ul>
+
+  <h3>Organizer Pre-learning</h3>
+  <p>جهزي رسمًا يوضح الفرق: Filter = بوابة، Router = تقاطع طرق.</p>
+</section>
+
+<!-- DAY 8 -->
+<section class="page">
+  <h2>DAY 8 — BUILD SOMETHING USEFUL</h2>
+
+  <h3>الهدف</h3>
+  <p>اختيار Use Case حقيقي صغير وبناء أبسط نسخة منه.</p>
+
+  <table>
+    <tr><th>الفكرة</th><th>Input</th><th>AI Task</th><th>Output</th></tr>
+    <tr><td>Feedback</td><td>نص Feedback</td><td>Category</td><td>Category + Sheet</td></tr>
+    <tr><td>Notes</td><td>ملاحظات</td><td>Summary</td><td>Summary + Sheet</td></tr>
+    <tr><td>Tasks</td><td>نص طويل</td><td>Extraction</td><td>Tasks + Deadlines</td></tr>
+    <tr><td>Learning request</td><td>طلب تعلم</td><td>Classification</td><td>Topic + Level</td></tr>
+    <tr><td>Ideas</td><td>فكرة</td><td>Categories</td><td>Category + Sheet</td></tr>
+  </table>
+
+  <h3>قبل البناء، اكتب:</h3>
+  <ol>
+    <li>Problem</li>
+    <li>Trigger</li>
+    <li>Input</li>
+    <li>AI task</li>
+    <li>Output</li>
+    <li>Action</li>
+  </ol>
+
+  <div class="callout warning">
+    <strong>Do not overbuild:</strong> لا تضف Router أو خطوات إضافية إلا إذا كانت تخدم المشكلة.
+  </div>
+
+  <h3>Mini Challenge</h3>
+  <p>أزل خطوة يدوية واحدة من العملية، مثل نسخ النص أو تصنيف الإجابة يدويًا.</p>
+
+  <h3>Artifact اليوم</h3>
+  <p>نسخة أولى تعمل من Use Case شخصي صغير.</p>
+
+  <h3>Checklist</h3>
+  <ul class="checklist">
+    <li>اخترت مشكلة بسيطة.</li>
+    <li>حددت Input.</li>
+    <li>حددت AI task.</li>
+    <li>حددت Output.</li>
+    <li>بنيت أبسط نسخة.</li>
+    <li>اختبرت مرة واحدة.</li>
+  </ul>
+</section>
+
+<!-- DAY 9 -->
+<section class="page">
+  <h2>DAY 9 — TESTING & DEBUGGING</h2>
+
+  <h3>الهدف</h3>
+  <p>
+    Automation الجيدة ليست التي تعمل مرة واحدة فقط؛ بل التي نعرف كيف نختبرها
+    ونفهم أين تتعطل.
+  </p>
+
+  <h3>اختبر هذه الحالات</h3>
+  <ul>
+    <li>Happy path: إدخال طبيعي.</li>
+    <li>Empty input: إدخال فارغ.</li>
+    <li>Unexpected input: نص غير متوقع.</li>
+    <li>Long input: نص طويل.</li>
+    <li>Wrong classification: تصنيف غير صحيح.</li>
+    <li>Connection failure: فشل الاتصال.</li>
+    <li>Missing field: حقل مفقود.</li>
+    <li>Bad output format: نتيجة غير منظمة.</li>
+  </ul>
+
+  <h3>Debugging Procedure</h3>
+  <ol>
+    <li>حدد Module الذي فشل.</li>
+    <li>اقرأ Input الذي وصل إليه.</li>
+    <li>اقرأ Output الذي أعاده.</li>
+    <li>افحص Mapping.</li>
+    <li>افحص Filter أو Router.</li>
+    <li>راجع تعليمات AI.</li>
+    <li>أصلح خطوة واحدة فقط.</li>
+    <li>اضغط Run once.</li>
+    <li>أعد الاختبار.</li>
+  </ol>
+
+  <div class="callout warning">
+    AI probabilistic؛ قد يعطي نتيجة مختلفة أو غير صحيحة. استخدم تعليمات واضحة،
+    Output منظمًا، Validation، ومراجعة بشرية عند الحاجة.
+  </div>
+
+  <h3>Testing Checklist</h3>
+  <ul class="checklist">
+    <li>اختبرت Happy path.</li>
+    <li>اختبرت Input فارغًا.</li>
+    <li>اختبرت Input غامضًا.</li>
+    <li>فحصت Execution details.</li>
+    <li>تحققت من Mapping.</li>
+    <li>تحققت من Filter.</li>
+    <li>أعدت الاختبار بعد الإصلاح.</li>
+  </ul>
+
+  <h3>Organizer Pre-learning</h3>
+  <p>عطّلي أو غيّري خطوة واحدة عمدًا، ثم اشرحي للمجموعة كيف عرفتِ مكان الخطأ.</p>
+</section>
+
+<!-- DAY 10 -->
+<section class="page">
+  <h2>DAY 10 — MINI AI AUTOMATION PROJECT</h2>
+
+  <h3>المطلوب</h3>
+  <p>مشروع صغير يحتوي على Trigger + AI + Action.</p>
+
+  <h3>أمثلة</h3>
+  <ul>
+    <li>Form → AI → Sheet</li>
+    <li>Feedback → AI → Category → Sheet</li>
+    <li>Text → AI → Summary → Sheet</li>
+    <li>Learning request → AI → Classification → Sheet</li>
+  </ul>
+
+  <h3>Project Workflow</h3>
+  <ol>
+    <li>Choose problem.</li>
+    <li>Define input.</li>
+    <li>Define trigger.</li>
+    <li>Define AI task.</li>
+    <li>Define output.</li>
+    <li>Build.</li>
+    <li>Test.</li>
+    <li>Debug.</li>
+    <li>Improve.</li>
+    <li>Explain.</li>
+  </ol>
+
+  <h3>Project Checklist</h3>
+  <ul class="checklist">
+    <li>المشكلة واضحة.</li>
+    <li>Trigger واضح.</li>
+    <li>Input محدد.</li>
+    <li>AI task محدد.</li>
+    <li>Output منظم.</li>
+    <li>Action موجود.</li>
+    <li>اختبرت 5 Inputs.</li>
+    <li>وثقت النتيجة.</li>
+    <li>عرفت حدود النظام.</li>
+    <li>حضّرت تحسينًا مستقبليًا.</li>
+  </ul>
+
+  <h3>طريقة العرض</h3>
+  <ul>
+    <li>What was manual?</li>
+    <li>What became automatic?</li>
+    <li>What does AI do?</li>
+    <li>What happens if AI is wrong?</li>
+    <li>What would I improve next?</li>
+  </ul>
+
+  <div class="callout success">
+    الهدف ليس أن يكون المشروع مثاليًا؛ الهدف أن تستطيع شرحه وتشغيله واكتشاف نقاط تحسينه.
+  </div>
+</section>
+
+<!-- ORGANIZER -->
+<section class="page">
+  <h2>5. Organizer Guide</h2>
+
+  <div class="callout">
+    لا يجب أن تكون المنظِّمة Expert. هي تتعلم مع المجموعة، ودورها أن تخلق بيئة
+    واضحة وآمنة للتجربة.
+  </div>
+
+  <h3>قبل كل يوم: 20–40 دقيقة</h3>
+  <ul>
+    <li>اقرئي مفهوم اليوم.</li>
+    <li>جرّبي التطبيق ببيانات وهمية.</li>
+    <li>صوّري Screenshots للخطوات المهمة.</li>
+    <li>اكتبي أين قد يخطئ المشارك.</li>
+    <li>جهزي Backup example.</li>
+  </ul>
+
+  <h3>إذا لم تعرفي شيئًا</h3>
+  <p>
+    لا تخفي ذلك. قولي: <em>“I’m learning this too.”</em>
+    ثم ارجعي إلى المصدر الرسمي، جرّبي الحل، وشاركي النتيجة مع المجموعة.
+  </p>
+
+  <table>
+    <tr><th>Day</th><th>Organizer preparation</th><th>ما يجب شرحه</th></tr>
+    <tr><td>1</td><td>أمثلة يومية</td><td>Trigger وAction</td></tr>
+    <tr><td>2</td><td>رسم Workflow</td><td>Input وProcess وOutput</td></tr>
+    <tr><td>3</td><td>تجربة نص مع ChatGPT</td><td>دور AI</td></tr>
+    <tr><td>4</td><td>تحسين Prompt</td><td>السياق والقيود</td></tr>
+    <tr><td>5</td><td>Scenario تجريبي</td><td>Modules وMapping</td></tr>
+    <tr><td>6</td><td>خمسة Inputs</td><td>AI داخل Workflow</td></tr>
+    <tr><td>7</td><td>Filter وRouter</td><td>الفرق بينهما</td></tr>
+    <tr><td>8</td><td>Use Case بسيط</td><td>عدم المبالغة في البناء</td></tr>
+    <tr><td>9</td><td>كسر اختبار عمدًا</td><td>قراءة Execution</td></tr>
+    <tr><td>10</td><td>مشروع مكتمل</td><td>الشرح والعرض</td></tr>
+  </table>
+</section>
+
+<!-- STORIES AND COMMUNITY -->
+<section class="page">
+  <h2>6. Daily Story Format</h2>
+
+  <ol>
+    <li><strong>Story 1:</strong> BIT BY BIT — DAY XX</li>
+    <li><strong>Story 2:</strong> Hook أو سؤال.</li>
+    <li><strong>Story 3:</strong> مفهوم واحد.</li>
+    <li><strong>Story 4:</strong> Visual Workflow.</li>
+    <li><strong>Story 5:</strong> Today’s Bit.</li>
+    <li><strong>Story 6:</strong> خطوات التطبيق.</li>
+    <li><strong>Story 7:</strong> Challenge.</li>
+    <li><strong>Story 8:</strong> Poll أو Check-in.</li>
+    <li><strong>Story 9:</strong> نتائج ومساعدة وأخطاء شائعة.</li>
+  </ol>
+
+  <div class="callout">
+    لا نحول Story إلى Lecture. الهدف أن يفهم المشاركون الفكرة وينفذوا خطوة صغيرة.
+  </div>
+
+  <h2>7. Community & Results</h2>
+  <ul>
+    <li>استخدم Nickname أو Emoji بدل الاسم الحقيقي.</li>
+    <li>اجعل مشاركة النتائج اختيارية.</li>
+    <li>لا تجعل التحدي Competition.</li>
+    <li>احتفل بنسبة التقدم، لا بالكمال.</li>
+    <li>اعرض عدد الأيام المكتملة والأخطاء الشائعة.</li>
+    <li>شارك Workflows المميزة وBefore/After وأطرف Bug.</li>
+  </ul>
+
+  <h3>Progress Tracker</h3>
+  <table>
+    <tr><th>المشارك</th><th>الأيام المكتملة</th><th>آخر Artifact</th><th>يحتاج مساعدة؟</th></tr>
+    <tr><td>Nickname 1</td><td>__/10</td><td>________</td><td>نعم / لا</td></tr>
+    <tr><td>Nickname 2</td><td>__/10</td><td>________</td><td>نعم / لا</td></tr>
+  </table>
+</section>
+
+<!-- PROMPT BANK -->
+<section class="page">
+  <h2>8. Prompt Bank</h2>
+
+  <h3>A. Summarization</h3>
+  <p><strong>الهدف:</strong> تلخيص نص. <strong>يستخدم عندما:</strong> يكون النص أطول من الوقت المتاح لقراءته.</p>
+  <div class="prompt">Summarize the text below in 3 concise bullet points.
+Keep the original meaning.
+Do not invent information.
+
+Text:
+[INSERT TEXT]</div>
+
+  <h3>B. Classification</h3>
+  <p><strong>الهدف:</strong> وضع النص في فئة.</p>
+  <div class="prompt">Classify the input into exactly one category:
+Hardware, Software, or Other.
+
+Return:
+Category:
+Reason:
+
+Input:
+[INSERT TEXT]</div>
+
+  <h3>C. Extraction</h3>
+  <p><strong>الهدف:</strong> استخراج حقول من نص.</p>
+  <div class="prompt">Extract the following fields from the text:
+Task:
+Deadline:
+Person:
+
+If a field is missing, write "Not provided".
+Do not invent information.
+
+Text:
+[INSERT TEXT]</div>
+
+  <h3>D. Rewriting</h3>
+  <p><strong>الهدف:</strong> إعادة صياغة النص.</p>
+  <div class="prompt">Rewrite the message in a friendly and professional tone.
+Keep it under 60 words.
+Preserve the meaning.
+
+Message:
+[INSERT TEXT]</div>
+
+  <h3>E. Structured Output</h3>
+  <div class="prompt">Return only these fields:
+Category:
+Topic:
+Level:
+Summary:
+
+Use no extra headings.
+If information is unclear, write "Unclear".</div>
+
+  <h3>F. Debugging Assistant</h3>
+  <div class="prompt">Help me debug this automation.
+Identify:
+1. Where the problem may be.
+2. What the input contains.
+3. What the output contains.
+4. One fix to test first.
+
+Do not assume missing information.
+
+Scenario description:
+[INSERT DESCRIPTION]
+
+Error or unexpected result:
+[INSERT ERROR]</div>
+</section>
+
+<!-- PROJECT BANK -->
+<section class="page">
+  <h2>9. Mini Project Bank</h2>
+
+  <table>
+    <tr><th>#</th><th>Input</th><th>AI task</th><th>Output</th><th>Action</th></tr>
+    <tr><td>1</td><td>جملة قصيرة</td><td>Rewrite</td><td>نسخة محسنة</td><td>Sheet</td></tr>
+    <tr><td>2</td><td>Feedback</td><td>Positive / Negative / Other</td><td>Category</td><td>Sheet</td></tr>
+    <tr><td>3</td><td>ملاحظة</td><td>Summarization</td><td>3 نقاط</td><td>Sheet</td></tr>
+    <tr><td>4</td><td>طلب تعلم</td><td>Classification</td><td>Topic + Level</td><td>Sheet</td></tr>
+    <tr><td>5</td><td>فكرة</td><td>Category</td><td>Idea type</td><td>Sheet</td></tr>
+    <tr><td>6</td><td>رسالة</td><td>Extract task</td><td>Task</td><td>Sheet</td></tr>
+    <tr><td>7</td><td>رسالة</td><td>Extract deadline</td><td>Deadline</td><td>Sheet</td></tr>
+    <tr><td>8</td><td>سؤال</td><td>Classify topic</td><td>Topic</td><td>Sheet</td></tr>
+    <tr><td>9</td><td>ملاحظات اجتماع</td><td>Summary + tasks</td><td>ملخص ومهام</td><td>Sheet</td></tr>
+    <tr><td>10</td><td>Feedback متعدد</td><td>Category + urgency</td><td>Category + urgency</td><td>Sheet + review</td></tr>
+  </table>
+
+  <div class="callout warning">
+    ابدأ بالفكرة رقم 1 أو 2 أو 3. لا تنتقل إلى المشاريع الأصعب قبل أن تعمل النسخة الأبسط.
+  </div>
+
+  <h2>10. Troubleshooting Cheat Sheet</h2>
+  <table>
+    <tr><th>Problem</th><th>Possible cause</th><th>Check</th><th>Fix</th></tr>
+    <tr><td>Trigger not firing</td><td>لم يصل Input</td><td>Form وRun once</td><td>أرسل Response جديدًا.</td></tr>
+    <tr><td>Connection error</td><td>انتهى الاتصال</td><td>Connections</td><td>أعد ربط الحساب.</td></tr>
+    <tr><td>Empty data</td><td>حقل فارغ</td><td>Input</td><td>أضف قيمة تجريبية.</td></tr>
+    <tr><td>Wrong mapping</td><td>حقل غير صحيح</td><td>Sheet columns</td><td>أعد Mapping.</td></tr>
+    <tr><td>AI wrong output</td><td>Prompt غامض</td><td>Prompt وInput</td><td>أضف Rules وExamples.</td></tr>
+    <tr><td>Filter blocking</td><td>شرط غير مطابق</td><td>Filter condition</td><td>راجع القيمة الفعلية.</td></tr>
+    <tr><td>Router wrong path</td><td>Condition خاطئ</td><td>Output Category</td><td>اختبر كل Path.</td></tr>
+    <tr><td>Sheet not updating</td><td>صفحة أو عمود خاطئ</td><td>File وSheet</td><td>اخترهما من جديد.</td></tr>
+    <tr><td>Scenario not running</td><td>لم يتم تشغيله</td><td>Schedule / toggle</td><td>شغّل Scenario حسب الإعداد المتاح.</td></tr>
+    <tr><td>Unexpected AI format</td><td>Output غير منظم</td><td>AI response</td><td>اطلب حقولًا ثابتة فقط.</td></tr>
+  </table>
+</section>
+
+<!-- ROADMAP -->
+<section class="page">
+  <h2>11. What We Do Not Learn Yet</h2>
+
+  <p>هذه المرحلة لا تدخل بعمق في:</p>
+  <ul>
+    <li>Python</li>
+    <li>REST APIs</li>
+    <li>Webhooks</li>
+    <li>JSON</li>
+    <li>Databases</li>
+    <li>RAG</li>
+    <li>Vector databases</li>
+    <li>MCP</li>
+    <li>AI Agents</li>
+    <li>Fine-tuning</li>
+    <li>Machine Learning mathematics</li>
+  </ul>
+
+  <h3>Part 2 Roadmap</h3>
+  <div class="workflow">
+    <div class="node">APIs</div><div class="arrow">→</div>
+    <div class="node">Webhooks</div><div class="arrow">→</div>
+    <div class="node">HTTP</div><div class="arrow">→</div>
+    <div class="node">JSON</div><div class="arrow">→</div>
+    <div class="node">Error Handling</div><div class="arrow">→</div>
+    <div class="node">Data Stores</div><div class="arrow">→</div>
+    <div class="node">AI Agents</div><div class="arrow">→</div>
+    <div class="node">RAG</div>
+  </div>
+
+  <h2>12. Final Roadmap</h2>
+  <div class="card center">
+    Level 0 — What is Automation?<br>↓<br>
+    Level 1 — Workflow Thinking<br>↓<br>
+    Level 2 — AI Basics<br>↓<br>
+    Level 3 — Prompting<br>↓<br>
+    Level 4 — Make Basics<br>↓<br>
+    Level 5 — AI + Make<br>↓<br>
+    Level 6 — Filters + Routers<br>↓<br>
+    Level 7 — Testing + Debugging<br>↓<br>
+    Level 8 — Mini Project<br>↓<br>
+    Next: APIs / Webhooks / AI Agents
+  </div>
+</section>
+
+<!-- READY -->
+<section class="page">
+  <h2>Am I ready?</h2>
+
+  <ul class="checklist" style="columns:1;">
+    <li>I understand Automation.</li>
+    <li>I can identify a Trigger.</li>
+    <li>I can identify an Action.</li>
+    <li>I can draw a Workflow.</li>
+    <li>I understand AI’s role.</li>
+    <li>I can write a basic Prompt.</li>
+    <li>I can create a Make Scenario.</li>
+    <li>I can connect Google data.</li>
+    <li>I can map fields.</li>
+    <li>I can use AI inside a workflow.</li>
+    <li>I understand Filters and Routers.</li>
+    <li>I can test an Automation.</li>
+    <li>I can debug basic errors.</li>
+    <li>I built my first AI Automation.</li>
+  </ul>
+
+  <div class="callout success center">
+    إذا استطعت إكمال معظم هذه النقاط، فقد بنيت أساسًا حقيقيًا في AI Automation.
+  </div>
+
+  <h2>WHAT’S NEXT?</h2>
+  <p>
+    المرحلة التالية ليست سباقًا إلى التعقيد. سنضيف قدرات جديدة تدريجيًا:
+    APIs، Webhooks، HTTP، JSON، Error Handling، Data Stores، ثم AI Agents
+    وRAG عندما تصبح الأساسيات واضحة.
+  </p>
+
+  <div class="workflow">
+    <div class="node">Simple Workflow</div><div class="arrow">→</div>
+    <div class="node">Reliable Workflow</div><div class="arrow">→</div>
+    <div class="node">Connected Systems</div><div class="arrow">→</div>
+    <div class="node">Advanced AI Automation</div>
+  </div>
+
+  <p class="center"><strong>Keep learning. Keep testing. Build bit by bit.</strong></p>
+</section>
+
+<!-- REFERENCES -->
+<section class="page">
+  <h2>References & Official Links</h2>
+
+  <p>استخدم المصادر الرسمية للتحقق من الواجهات والميزات والأسعار، لأن التفاصيل قد تتغير.</p>
+
+  <ul>
+    <li>
+      Make — الموقع الرسمي:
+      <a href="https://www.make.com/" target="_blank">
+        https://www.make.com/
+      </a>
+    </li>
+    <li>
+      Make Academy:
+      <a href="https://academy.make.com/" target="_blank">
+        https://academy.make.com/
+      </a>
+    </li>
+    <li>
+      Make Help Center:
+      <a href="https://help.make.com/" target="_blank">
+        https://help.make.com/
+      </a>
+    </li>
+    <li>
+      Make Pricing:
+      <a href="https://www.make.com/en/pricing" target="_blank">
+        https://www.make.com/en/pricing
+      </a>
+    </li>
+    <li>
+      OpenAI Platform Documentation:
+      <a href="https://platform.openai.com/docs/" target="_blank">
+        https://platform.openai.com/docs/
+      </a>
+    </li>
+    <li>
+      OpenAI Help Center:
+      <a href="https://help.openai.com/" target="_blank">
+        https://help.openai.com/
+      </a>
+    </li>
+    <li>
+      ChatGPT Projects:
+      <a href="https://help.openai.com/en/articles/10169521-using-projects-in-chatgpt" target="_blank">
+        https://help.openai.com/en/articles/10169521-using-projects-in-chatgpt
+      </a>
+    </li>
+    <li>
+      Google Forms Help:
+      <a href="https://support.google.com/docs/topic/6063584" target="_blank">
+        https://support.google.com/docs/topic/6063584
+      </a>
+    </li>
+    <li>
+      Google Sheets Help:
+      <a href="https://support.google.com/docs/topic/9054603" target="_blank">
+        https://support.google.com/docs/topic/9054603
+      </a>
+    </li>
+  </ul>
+
+  <div class="callout warning">
+    لا تثبت رقمًا للسعر أو عدد العمليات أو خصائص الخطة داخل المادة التعليمية.
+    استخدم صفحة Pricing الرسمية عند الحاجة، واذكر أن التفاصيل قد تتغير.
+  </div>
+
+  <h3>ملاحظة أخيرة</h3>
+  <p>
+    أسماء بعض Modules أو أماكن الأزرار في Make قد تختلف باختلاف الواجهة أو الخطة.
+    لا تتغير الفكرة الأساسية: Trigger يستقبل البيانات، Modules تعالجها،
+    Mapping ينقلها، وAction يحفظ أو يرسل النتيجة.
+  </p>
+
+  <p class="center" style="margin-top:50px;">
+    <strong>BIT BY BIT — AI AUTOMATION</strong><br>
+    circods
+  </p>
+</section>
+
+<!-- FOOTERS -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const pages = document.querySelectorAll(".page");
+  pages.forEach((page, index) => {
+    const footer = document.createElement("div");
+    footer.className = "footer";
+    footer.innerHTML = `
+      <span>BIT BY BIT · circods</span>
+      <span>${index + 1} / ${pages.length}</span>
+    `;
+    page.appendChild(footer);
+  });
+});
+</script>
+
+
+</body>
+</html>
